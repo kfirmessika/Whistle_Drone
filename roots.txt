@@ -1,0 +1,9 @@
+https://github.com/kfirmessika/Whistle_Drone.git
+
+C:\kfir\myFiles\Projects\Studies\robotics\Whistle_Drone\whistle_fly_embed
+
+C:\kfir\myFiles\Projects\Studies\robotics\Whistle_Drone\whistle_calibrate_embed
+
+C:\kfir\myFiles\Projects\Studies\robotics\Whistle_Drone\users
+
+C:\kfir\myFiles\Projects\Studies\robotics\Whistle_Drone\.venv

@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual env
+.venv/
+venv/
+
+# User recordings & embeddings
+
+
+#Else
+roots/
+Applicability testing/
+data set/
+old code/
+tests/
