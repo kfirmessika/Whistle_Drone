@@ -4,7 +4,8 @@ whistle_calibrate_embed.py
 –––––––––––––––––––––––––––
 Interactive recorder that
 1.  creates    users/<USER>/{recordings,embeddings}/
-2.  (re)records short WAV clips—guaranteed 3 good takes each—for six whistle commands
+2.  (re)records short WAV clips—guaranteed 3 good takes each—for standard
+    whistle commands and additional pattern-based sequences
 3.  extracts   MFCC-mean embeddings
 4.  saves      users/<USER>/embeddings/embeddings.npy  (shape: N×D)
                users/<USER>/embeddings/labels.json     (parallel list)
@@ -18,7 +19,12 @@ SR          = 22_050      # Hz – small model, good enough for whistle
 DURATION    = 2.5         # seconds per example (was 1.5)
 N_MFCC      = 20          # length of each embedding
 MIN_VOL_RMS = 0.005       # gate so silence isn't stored
-COMMANDS    = ["forward","back","left","right","fly","land"]
+# Base whistle commands remain for backward compatibility
+COMMANDS    = [
+    "forward","back","left","right","fly","land",
+    # pattern-based commands
+    "emergency","rotate","slideup","slidedown"
+]
 
 # ---------------------------------------------------------------------------
 

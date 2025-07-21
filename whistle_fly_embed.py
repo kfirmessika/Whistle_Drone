@@ -9,6 +9,7 @@ whistle_fly_embed.py – v1.2 (15 Jul 2025)
 """
 import argparse, json, os, pathlib, time, math, sys, queue
 import numpy as np, sounddevice as sd, librosa, cv2
+from whistle_patterns import RollingBuffer, classify_pattern
 from scipy.spatial.distance import cdist
 
 try:
@@ -69,6 +70,18 @@ class SimpleKNN:
         # Return the label corresponding to the closest embedding
         return self.y[idx]
 
+def load_user_mlp(user):
+    path = pathlib.Path("users")/user/"embeddings"/"user_mlp.npz"
+    if not path.exists():
+        return None
+    data = np.load(path)
+    return {k:data[k] for k in data.files}
+
+def run_user_mlp(x, net):
+    h = np.tanh(x @ net['W1'] + net['b1'])
+    out = h @ net['W2'] + net['b2']
+    return float(out)
+
 def load_user_embeddings(user):
     """
     Loads the pre-saved embeddings and labels for a specific user.
@@ -87,6 +100,7 @@ def load_user_embeddings(user):
 
 # ------------------ audio thread ---------------------------------------------
 audio_q : "queue.Queue[np.ndarray]" = queue.Queue()
+pattern_buf = RollingBuffer(4.0, SR)
 
 def audio_cb(indata, frames, time_info, status):
     """
@@ -95,30 +109,35 @@ def audio_cb(indata, frames, time_info, status):
     """
     if status:
         print(f"Audio stream status: {status}", file=sys.stderr)
-    audio_q.put(indata.copy())
+    mono = indata[:,0].copy()
+    audio_q.put(mono)
 
-def next_window():
-    """
-    Collects WIN seconds of audio from the queue and returns it as a mono numpy array.
-    This function blocks until enough audio data is available.
-    """
-    needed = int(WIN * SR)
+def next_chunk(duration=0.1):
+    """Return a chunk of audio of given duration in seconds from the queue."""
+    needed = int(duration * SR)
     buf, got = [], 0
     while got < needed:
         chunk = audio_q.get()
         buf.append(chunk); got += len(chunk)
-    return np.concatenate(buf)[:needed,0]
+    return np.concatenate(buf)[:needed]
 
-def classify_window(knn: SimpleKNN):
-    """
-    Captures an audio window, checks its volume, extracts MFCCs, and classifies it using k-NN.
-    Returns the predicted command string or None if below volume gate.
-    """
-    raw = next_window()
-    if np.sqrt(np.mean(raw**2)) < VOL_GATE_RMS:
+def classify_buffer(knn: SimpleKNN, user_net=None):
+    """Analyze the rolling buffer and return a command string or None."""
+    pat = classify_pattern(pattern_buf, SR)
+    if pat is None:
         return None
-    mfcc = librosa.feature.mfcc(y=raw.astype(float), sr=SR, n_mfcc=N_MFCC)
-    return knn.predict(mfcc.mean(axis=1))
+    if pat == "single":
+        y = pattern_buf.get()[-int(WIN*SR):]
+        if np.sqrt(np.mean(y**2)) < VOL_GATE_RMS:
+            return None
+        mfcc = librosa.feature.mfcc(y=y.astype(float), sr=SR, n_mfcc=N_MFCC)
+        v = mfcc.mean(axis=1)
+        if user_net is not None:
+            score = run_user_mlp(v, user_net)
+            if score < 0:
+                return None
+        return knn.predict(v)
+    return pat
 
 # ------------------ drone wrapper -------------------------------------------
 class Drone:
@@ -348,6 +367,7 @@ def main():
     args = ap.parse_args()
 
     knn = load_user_embeddings(args.user)
+    user_net = load_user_mlp(args.user)
     drone = Drone(real=not args.sim)
 
     # Start the audio input stream
@@ -367,7 +387,14 @@ def main():
             if key==ord('e'): drone.emergency_stop(); break # 'e' for emergency stop
             if key==ord('l'): drone.land() # 'l' for manual land
 
-            cmd = classify_window(knn)
+            # consume new audio to keep buffer fresh
+            try:
+                chunk = next_chunk(0.1)
+                pattern_buf.append(chunk)
+            except Exception:
+                pass
+
+            cmd = classify_buffer(knn, user_net)
             if cmd: print(f"🎧 {cmd}")
             drone.update(cmd)
             time.sleep(0.05) # Control loop rate
