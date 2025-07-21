@@ -3,24 +3,22 @@
 whistle_calibrate_embed.py
 –––––––––––––––––––––––––––
 Interactive recorder that
-
 1.  creates    users/<USER>/{recordings,embeddings}/
-2.  lets you   (re)record short WAV clips for six whistle commands
-3.  extracts   a simple MFCC-mean embedding from every clip
+2.  (re)records short WAV clips—guaranteed 3 good takes each—for six whistle commands
+3.  extracts   MFCC-mean embeddings
 4.  saves      users/<USER>/embeddings/embeddings.npy  (shape: N×D)
                users/<USER>/embeddings/labels.json     (parallel list)
-
-Dependencies
-  pip install sounddevice scipy librosa
+5.  computes   “golden” centroids for each command, saves golden.npy + golden_labels.json
 """
 import argparse, json, os, pathlib, time, sys, wave, uuid
 import numpy as np, sounddevice as sd, librosa
+from scipy.spatial.distance import cdist
 
 SR          = 22_050      # Hz – small model, good enough for whistle
-DURATION    = 1.5         # seconds per example
+DURATION    = 2.5         # seconds per example (was 1.5)
 N_MFCC      = 20          # length of each embedding
 MIN_VOL_RMS = 0.005       # gate so silence isn't stored
-COMMANDS = ["forward","back","left","right","fly","land"]
+COMMANDS    = ["forward","back","left","right","fly","land"]
 
 # ---------------------------------------------------------------------------
 
@@ -34,7 +32,8 @@ def record_clip(path: pathlib.Path):
         return None
     wav = (audio * 32767).astype("<i2").tobytes()
     with wave.open(str(path),"wb") as f:
-        f.setnchannels(1); f.setsampwidth(2); f.setframerate(SR); f.writeframes(wav)
+        f.setnchannels(1); f.setsampwidth(2); f.setframerate(SR)
+        f.writeframes(wav)
     print(f"✔  Saved {path.name}")
     return path
 
@@ -50,24 +49,31 @@ def main():
         help="If recordings exist, keep them & just rebuild embeddings")
     args = ap.parse_args()
 
-    user_dir       = pathlib.Path("users")/args.user
-    rec_dir        = user_dir/"recordings"
-    emb_dir        = user_dir/"embeddings"
+    user_dir = pathlib.Path("users")/args.user
+    rec_dir  = user_dir/"recordings"
+    emb_dir  = user_dir/"embeddings"
     rec_dir.mkdir(parents=True, exist_ok=True)
     emb_dir.mkdir(parents=True, exist_ok=True)
 
     # ---------------------------------------------------------------------
     # STEP 1 – (optionally) make new recordings
     if not args.reuse:
-        # drop old recordings
         for p in rec_dir.glob("*.wav"): p.unlink()
         print(f"\n🎙  Recording whistle examples for user: {args.user}")
         for cmd in COMMANDS:
             print(f"\n=== {cmd.upper()} ===")
-            for i in range(3):                       # 3 clips per command
-                input("Press ⏎ then whistle…")
-                fname = f"{cmd}_{i}_{uuid.uuid4().hex[:8]}.wav"
-                _ = record_clip(rec_dir/fname)
+            saved = 0
+            attempt = 0
+            while saved < 3:
+                attempt += 1
+                input(f"[{cmd}] Attempt {attempt} → press ⏎ then whistle…")
+                fname = f"{cmd}_{saved}_{uuid.uuid4().hex[:8]}.wav"
+                ok = record_clip(rec_dir/fname)
+                if ok:
+                    saved += 1
+                    print(f"   ({saved}/3) kept 👍")
+                else:
+                    print("   Retrying…")
 
     # ---------------------------------------------------------------------
     # STEP 2 – build embedding matrix
@@ -88,6 +94,31 @@ def main():
     np.save(emb_dir/"embeddings.npy", np.vstack(X))
     (emb_dir/"labels.json").write_text(json.dumps(y))
     print(f"✅  Saved {len(y)} embeddings to {emb_dir}")
+
+    # ---------------------------------------------------------------------
+    # STEP 3 – compute golden whistle centroids
+    print("\n🏅  Computing golden whistle centroids…")
+    labels = y
+    gold = {}
+    for cmd in COMMANDS:
+        idxs = [i for i,lab in enumerate(labels) if lab == cmd]
+        if len(idxs) < 2:
+            print(f"⚠  Only {len(idxs)} clips for '{cmd}', skipping centroid.")
+            continue
+        sub   = np.vstack([X[i] for i in idxs])
+        dists = cdist(sub, sub, "euclidean")
+        md    = dists.mean(axis=1)
+        thresh = np.median(md) + np.std(md)
+        keep   = sub[md <= thresh]
+        centroid = keep.mean(axis=0)
+        gold[cmd] = centroid
+        print(f"   {cmd}: {keep.shape[0]} kept → centroid")
+
+    if gold:
+        np.save(emb_dir/"golden.npy", np.vstack(list(gold.values())))
+        (emb_dir/"golden_labels.json")\
+            .write_text(json.dumps(list(gold.keys())))
+        print(f"✅  Saved {len(gold)} golden centroids")
 
 if __name__ == "__main__":
     main()
