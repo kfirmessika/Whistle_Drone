@@ -1,9 +1,33 @@
+<!-- HERO (full-width banner that looks like a background) -->
 <p align="center">
-  <img src="docs/cover.png" alt="Whistle Drone — DSP + AI whistle control" width="1000">
+  <img src="docs/hero.png" alt="Whistle Drone – poster" width="100%">
 </p>
 
+<h1 align="center">Whistle Drone</h1>
 <p align="center">
-  <a href="https://youtu.be/NQ4u7nfjYvw" target="_blank">
-    <img src="https://img.youtube.com/vi/NQ4u7nfjYvw/maxresdefault.jpg" alt="Watch the demo on YouTube" width="900">
+  Real‑time whistle detection (DSP + optional AI) controlling a DJI Tello.
+</p>
+
+<!-- Action buttons -->
+<p align="center">
+  <a href="https://youtu.be/NQ4u7nfjYvw">
+    <img alt="Watch demo on YouTube"
+         src="https://img.shields.io/badge/Watch%20demo-YouTube-red?logo=youtube">
+  </a>
+  <a href="docs/Whistle_Drone_Poster.pdf">
+    <img alt="Poster (PDF)"
+         src="https://img.shields.io/badge/Poster-PDF-blue?logo=adobeacrobatreader">
+  </a>
+  <a href="docs/Whistle_Drone_Presentation.pdf">
+    <img alt="Slides (PDF)"
+         src="https://img.shields.io/badge/Slides-PDF-green?logo=microsoftpowerpoint">
+  </a>
+</p>
+
+<!-- Clickable video thumbnail (nice preview, not just an empty box) -->
+<p align="center">
+  <a href="https://youtu.be/NQ4u7nfjYvw">
+    <img src="https://img.youtube.com/vi/NQ4u7nfjYvw/maxresdefault.jpg"
+         alt="Watch the Whistle Drone demo on YouTube" width="85%">
   </a>
 </p>
