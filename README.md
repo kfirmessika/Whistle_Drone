@@ -1,32 +1,33 @@
-<!-- Hero banner -->
+<!-- HERO (full-width banner that looks like a background) -->
 <p align="center">
-  <img src="docs/hero.png" alt="Whistle Drone Project Poster" width="100%">
+  <img src="docs/hero.png" alt="Whistle Drone – poster" width="100%">
 </p>
 
-<h1 align="center">🎶 Whistle Drone – Control Tello with Your Whistle</h1>
-
+<h1 align="center">Whistle Drone</h1>
 <p align="center">
-  Inspired by Yondu’s arrow (*Guardians of the Galaxy*), this project controls a DJI Tello drone 
-  using only whistles. Low-latency DSP detection + periodic AI authentication ensures the drone 
-  listens **only to the pilot’s whistle**.
+  Real‑time whistle detection (DSP + optional AI) controlling a DJI Tello.
 </p>
 
----
-
-## 🎥 Demo Video
-
-Watch the demo here 👉 [**Whistle Drone – YouTube Demo**](https://youtu.be/NQ4u7nfjYvw)
-
+<!-- Action buttons -->
 <p align="center">
-  <a href="https://youtu.be/NQ4u7nfjYvw" target="_blank">
-    <img src="https://img.youtube.com/vi/NQ4u7nfjYvw/maxresdefault.jpg" 
-         alt="Whistle Drone Demo Video" width="80%">
+  <a href="https://youtu.be/NQ4u7nfjYvw">
+    <img alt="Watch demo on YouTube"
+         src="https://img.shields.io/badge/Watch%20demo-YouTube-red?logo=youtube">
+  </a>
+  <a href="docs/Poster.pdf">
+    <img alt="Poster (PDF)"
+         src="https://img.shields.io/badge/Poster-PDF-blue?logo=adobeacrobatreader">
+  </a>
+  <a href="docs/Presentation.pdf">
+    <img alt="Slides (PDF)"
+         src="https://img.shields.io/badge/Slides-PDF-green?logo=microsoftpowerpoint">
   </a>
 </p>
 
----
-
-## 📄 Docs
-
-- [📘 Poster (PDF)](docs/Whistle_Drone_Poster.pdf)  
-- [📑 Presentation (PDF)](docs/Whistle_Drone_Presentation.pdf)
+<!-- Clickable video thumbnail (nice preview, not just an empty box) -->
+<p align="center">
+  <a href="https://youtu.be/NQ4u7nfjYvw">
+    <img src="https://img.youtube.com/vi/NQ4u7nfjYvw/maxresdefault.jpg"
+         alt="Watch the Whistle Drone demo on YouTube" width="85%">
+  </a>
+</p>
