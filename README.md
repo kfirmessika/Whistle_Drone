@@ -13,15 +13,7 @@
     <img alt="Poster (PDF)"
          src="https://img.shields.io/badge/Poster-PDF-blue?logo=adobeacrobatreader">
   </a>
-<<<<<<< HEAD
-  <a href="docs/Slides.pdf">
-=======
-<<<<<<< HEAD
-  <a href="docs/Sliders.pdf">
-=======
-  <a href="docs/Presentation.pdf">
->>>>>>> 58d0bd3 (Initial clean commit: whistle-controlled drone project)
->>>>>>> ae93297 (Sync repo with local: docs updates (Sliders), model.tflite, and all changes)
+  <a href="docs/Slides">
     <img alt="Slides (PDF)"
          src="https://img.shields.io/badge/Slides-PDF-green?logo=microsoftpowerpoint">
   </a>
