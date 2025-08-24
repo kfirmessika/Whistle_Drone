@@ -1,9 +1,3 @@
-<!-- HERO (full-width banner that looks like a background) 
-<p align="center">
-  <img src="docs/cover.png" alt="Whistle Drone – poster" width="100%">
-</p>
--->
-
 <h1 align="center">Whistle Drone</h1>
 <p align="center">
   Real‑time whistle detection (DSP + AI) controlling a DJI Tello.
