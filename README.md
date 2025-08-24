@@ -18,7 +18,7 @@
     <img alt="Poster (PDF)"
          src="https://img.shields.io/badge/Poster-PDF-blue?logo=adobeacrobatreader">
   </a>
-  <a href="docs/Presentation.pdf">
+  <a href="docs/Slides.pdf">
     <img alt="Slides (PDF)"
          src="https://img.shields.io/badge/Slides-PDF-green?logo=microsoftpowerpoint">
   </a>
