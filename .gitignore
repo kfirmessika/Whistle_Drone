@@ -26,7 +26,6 @@ old_code/
 presentation_edit/
 
 # --- Large model files (skip unless using LFS) ---
-*.tflite
 *.bin
 *.h5
 *.ckpt
