@@ -10,7 +10,7 @@
 
 <!-- Action buttons -->
 <p align="center">
-  <a href="https://youtu.be/NQ4u7nfjYvw">
+  <a href="https://youtu.be/0tYgRTzRg9I">
     <img alt="Watch demo on YouTube"
          src="https://img.shields.io/badge/Watch%20demo-YouTube-red?logo=youtube">
   </a>
