@@ -23,11 +23,3 @@
          src="https://img.shields.io/badge/Slides-PDF-green?logo=microsoftpowerpoint">
   </a>
 </p>
-
-<!-- Clickable video thumbnail (nice preview, not just an empty box) -->
-<p align="center">
-  <a href="https://youtu.be/NQ4u7nfjYvw">
-    <img src="https://img.youtube.com/vi/NQ4u7nfjYvw/maxresdefault.jpg"
-         alt="Watch the Whistle Drone demo on YouTube" width="85%">
-  </a>
-</p>
