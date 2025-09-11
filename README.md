@@ -1,7 +1,5 @@
 <h1 align="center">Whistle Drone</h1>
-<p align="center">
-  Real‑time whistle detection (DSP + AI) controlling a DJI Tello.
-</p>
+<h2 align="center">Real‑time whistle detection (DSP + AI) controlling a DJI Tello.</h2>
 
 <!-- Action buttons -->
 <p align="center">
